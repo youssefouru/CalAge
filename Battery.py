@@ -1,8 +1,8 @@
 from datetime import date
+from Error import Error as Er
 
 
 class Battery:
-    instances = []
 
     def __init__(self, barcode, seqnum, storage_location, temperature, diagnostic_frequency, form_factor, battery_name,
                  soc):
@@ -39,7 +39,7 @@ class Battery:
         self.diagnostic_number = 1
         self.battery_name = battery_name
         self.soc = soc
-        self.last_diag = date.today()
+        self.next_diag = date.today()
 
     def channge_location(self, storage_location):
         """
@@ -51,5 +51,17 @@ class Battery:
         """
         ...
 
+    def can_be_diagnoticed(self):
+        """
+        This method is used to determine whether the battery can be diagnosticed or not.
+        :return: True if today is past the next diagnostic's day
+        """
+        return date.today() >= self.next_diag
+
     def launch_diagnostic(self, diagnostic_chamber):
-        ...
+        if self.can_be_diagnoticed():
+            diagnostic_chamber.register_for_diagnostic(self)
+            return Er.ERR_NONE
+        else:
+            return Er.ERR_DIAG_TOO_EARLY
+
