@@ -10,7 +10,9 @@ class Error(Enum):
     ERR_TEMP = 2
     ERR_NO_SLOTS = 3
     ERR_DIAG_TOO_EARLY = 4
+    ERR_SEALED_CHAMBER = 5
 
     messages = ["", "Illegal Argument used", "Temperature does not match, {} instead of {}",
                 "There is no slot available",
-                "You ordered a diagnostic too early you have to wait until {}"]
+                "You ordered a diagnostic too early you have to wait until {}",
+                "The diagnostic chamber is sealed you cannot open unless the diagnostic is aborted"]

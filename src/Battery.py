@@ -36,32 +36,15 @@ class Battery:
         self.diagnostic_frequency = diagnostic_frequency
         self.form_factor = form_factor
         self.active_status = True
+        self.under_diag = False
         self.diagnostic_number = 1
         self.battery_name = battery_name
         self.soc = soc
         self.next_diag = date.today()
 
-    def channge_location(self, storage_location):
+    def can_be_diagnosed(self):
         """
-        This method is used to change the location of the battery to the location in parameter.
-
-        Parameters
-        ----------
-        :param storage_location: The new location of the battery.
-        """
-        ...
-
-    def can_be_diagnoticed(self):
-        """
-        This method is used to determine whether the battery can be diagnosticed or not.
-        :return: True if today is past the next diagnostic's day
+        This method is used to determine whether the battery can be diagnosed or not.
+        :return: True if today is past the next diagnostics's day
         """
         return date.today() >= self.next_diag
-
-    def launch_diagnostic(self, diagnostic_chamber):
-        if self.can_be_diagnoticed():
-            diagnostic_chamber.register_for_diagnostic(self)
-            return Er.ERR_NONE
-        else:
-            return Er.ERR_DIAG_TOO_EARLY
-

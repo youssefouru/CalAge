@@ -1,5 +1,4 @@
-from Error import Error as Er
-from Battery import Battery
+from src.Error import Error as Er
 
 
 class TempChamber:
@@ -15,7 +14,7 @@ class TempChamber:
         self.temperature = temperature
         self.batteries = {}
 
-    def register(self, battery: Battery):
+    def register(self, battery):
         """
         This method register a battery to the chamber.
 
