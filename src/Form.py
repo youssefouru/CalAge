@@ -7,8 +7,19 @@ class Form(Enum):
     Pouch = 1
     Prismatic = 2
 
-    switcher = {
-        0: Cylindrical,
-        1: Pouch,
-        2: Prismatic
-    }
+
+switcher = {
+    0: Form.Cylindrical,
+    1: Form.Pouch,
+    2: Form.Prismatic
+}
+
+translator = {
+    Form.Cylindrical: "Cylindrical",
+    Form.Pouch: "Pouch",
+    Form.Prismatic: "Prismatic",
+
+    "Prismatic": Form.Prismatic,
+    "Pouch": Form.Pouch,
+    "Cylindrical": Form.Cylindrical
+}

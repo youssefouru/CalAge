@@ -1,5 +1,6 @@
 from datetime import date
-from Error import Error as Er
+from Error import Error as Err
+from Form import *
 
 
 class Battery:
@@ -12,7 +13,7 @@ class Battery:
         Parameters
         ----------
         :param barcode: str
-            The barcode of the batterery.
+            The barcode of the battery.
         :param seqnum: str
             The sequence number of the battery.
         :param storage_location: TempChamber
@@ -48,3 +49,9 @@ class Battery:
         :return: True if today is past the next diagnostics's day
         """
         return date.today() >= self.next_diag
+
+    def generateFile(self):
+        return "{}_{}_{}".format(self.barcode, self.seqnum, self.diagnostic_number)
+
+    def generateProtocol(self):
+        return "{}_{}".format(translator(self.form_factor), self.soc)

@@ -31,6 +31,6 @@ class TempChamber:
         else:
             return Er.ERR_TEMP
 
-    def unregister(self, barrcode):
-        battery = self.batteries.pop(barrcode)
+    def unregister(self, barcode):
+        battery = self.batteries.pop(barcode)
         return battery
