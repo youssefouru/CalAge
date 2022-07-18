@@ -1,21 +1,24 @@
 from Request import Request as Rq
+from Request import translate
 from BlockingQueue import BlockingQueue
 import itertools
 
 
 class Server:
 
-    def __init__(self):
+    def __init__(self, shutdown=[]):
         self.requests = BlockingQueue()
         self.batteries = {}
         self.tempChamber = {}
         self.diagChamber = {}
-        self.running = itertools.count()
+        self.heads = []
+        self.shutdown = shutdown
 
     def run(self):
-        self.running = next(self.running)
+        self.shutdown.append(0)
         request = self.requests.dequeue()
-        head = request[0]
+        head = translate[request[0]]
+        self.heads.append(head)
         while head is not Rq.DISCONNECT:
             if head == Rq.REGISTER_BATTERY:
                 ...
@@ -30,8 +33,8 @@ class Server:
             elif head == Rq.ABORT_DIAGNOSTIC:
                 ...
             request = self.requests.dequeue()
-            head = request[0]
-        self.running = next(self.running)
+            head = translate[request[0]]
+        self.shutdown.pop()
 
     def receive_request(self, request):
         """
