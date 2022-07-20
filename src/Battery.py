@@ -51,7 +51,7 @@ class Battery:
         return date.today() >= self.next_diag
 
     def generateFile(self):
-        return "{}_{}_{}".format(self.barcode, self.seqnum, self.diagnostic_number)
+        return "{}_{}_{}.txt".format(self.barcode, self.seqnum, self.diagnostic_number)
 
     def generateProtocol(self):
-        return "{}_{}".format(translator(self.form_factor), self.soc)
+        return "{}_{}.txt".format(translator(self.form_factor), self.soc)

@@ -2,6 +2,7 @@ from Form import Form as Fr
 from Error import Error as Err
 from datetime import date
 from dateutil.relativedelta import relativedelta
+import numpy as np
 
 
 class DiagChamber:
@@ -35,7 +36,6 @@ class DiagChamber:
         :param battery:  The battery we want to register.
         :return: error code.
         """
-        today = date.today()
         if battery.temperature is not self.temperature:
             return Err.ERR_TEMP
 
@@ -57,11 +57,8 @@ class DiagChamber:
         self.start_date = date.today()
         self.finish_date = self.start_date + self.time
 
-    def add_time(self, deltaTime):
-        self.start_date += deltaTime
-
     def isFinished(self):
-        return self.start_date >= self.finish_date
+        return date.today() >= self.finish_date
 
     def unload(self, aborted=False):
         if not (self.isFinished() or aborted):
