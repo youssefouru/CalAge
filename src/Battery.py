@@ -1,4 +1,7 @@
+import json
 from datetime import date
+from json import JSONEncoder
+
 from Error import Error as Err
 from Form import *
 
@@ -31,8 +34,6 @@ class Battery:
         """
 
         self.barcode = barcode
-        self.seqnum = seqnum
-        self.storage_location = storage_location
         self.temperature = temperature
         self.diagnostic_frequency = diagnostic_frequency
         self.form_factor = form_factor
@@ -42,6 +43,11 @@ class Battery:
         self.battery_name = battery_name
         self.soc = soc
         self.next_diag = date.today()
+        self.file = ""
+        self.protocol = ""
+        self.seqnum = seqnum
+        self.storage_location = storage_location
+        storage_location.register(self)
 
     def can_be_diagnosed(self):
         """
@@ -51,7 +57,16 @@ class Battery:
         return date.today() >= self.next_diag
 
     def generateFile(self):
-        return "{}_{}_{}.txt".format(self.barcode, self.seqnum, self.diagnostic_number)
+        name = "res/{}_{}_{}.txt".format(self.barcode, self.seqnum, self.diagnostic_number)
+        self.file = open(name, "w")
+        return self.file
 
     def generateProtocol(self):
-        return "{}_{}.txt".format(translator(self.form_factor), self.soc)
+        name = "res/{}_{}.txt".format(translator(self.form_factor), self.soc)
+        self.protocol = open(name, "w")
+        return self.protocol
+
+
+class BatteryEncoder(JSONEncoder):
+    def default(self, o):
+        return o.__dict__

@@ -1,7 +1,8 @@
 import Form
-from Battery import Battery
-from Form import *
+from Battery import Battery, BatteryEncoder
+from Form import translator
 from TempChamber import TempChamber
+import json
 
 
 class Database:
@@ -13,41 +14,59 @@ class Database:
         self.numBat = 0
         self.numTemp = 0
         self.numDiag = 0
+        self.name = "res/database.txt"
 
-    def register_component(self, comp):
-        head = comp[0]
-        returnValue = head + " "
+    def register_component(self, head, *params):
         if head == "-b":
-            barcode = comp[1]
-            seqnum = comp[2]
-            storage_location = self.tempChambers[int(comp[3])]
-            temperature = int(comp[4])
-            diagnostic_frequency = int(comp[5])
-            form_factor = Form.translator[comp[6]]
-            battery_name = comp[7]
-            soc = int(comp[8])
+            barcode = params[0]
+            seqnum = params[1]
+            storage_location = self.tempChambers.get(int(params[2]), None)
+            temperature = int(params[3])
+            diagnostic_frequency = int(params[4])
+            form_factor = Form.translator.get(params[5], None)
+            battery_name = params[6]
+            soc = int(params[7])
             battery = Battery(barcode, seqnum, storage_location, temperature, diagnostic_frequency, form_factor,
                               battery_name, soc)
             self.batteries[self.numBat] = battery
-            returnValue += self.numBat
             self.numBat += 1
         elif head == "-tc":
-            temperature = int(comp[1])
+            temperature = int(params[0])
             tempChamber = TempChamber(temperature)
             self.tempChambers[self.numTemp] = tempChamber
-            returnValue += self.numTemp
             self.numTemp += 1
         elif head == "-dc":
             ...
 
-        return returnValue
-
-    def get(self, comp, number):
-        if comp == "-b":
+    def get(self, ty, number):
+        if ty == "-b":
             return self.batteries.get(number, None)
-        elif comp == "-tc":
+        elif ty == "-tc":
             return self.tempChambers.get(number, None)
-        elif comp == "-dc":
+        elif ty == "-dc":
             return self.diagChambers.get(number, None)
         else:
             return None
+
+    def save(self):
+        with open(self.name, "w") as my_file:
+            json.dump(self.batteries, my_file, cls=BatteryEncoder)
+            json.dump(self.tempChambers, my_file)
+            json.dump(self.diagChambers, my_file)
+            my_file.close()
+
+    def load(self):
+        with open(self.name, "r") as my_file:
+            self.batteries = json.load(my_file)
+            self.tempChambers = json.load(my_file)
+            self.diagChambers = json.load(my_file)
+            my_file.close()
+
+    def needToBeDiagnosed(self):
+        b = []
+        for chamber in self.tempChambers:
+            for (barcode, battery) in chamber.batteries.item():
+                if battery.can_be_diagnosed():
+                    b.append(battery)
+
+        return b

@@ -8,7 +8,7 @@ class Server:
 
     def __init__(self, shutdown):
         self.requests = BlockingQueue()
-        database = Database()
+        self.database = Database()
         self.heads = []
         self.shutdown = shutdown
 
@@ -16,13 +16,14 @@ class Server:
         self.shutdown.append(0)
         running = True
         head = Rq.UNRECOGNIZED
+        request = []
         while running:
             if head == Rq.REGISTER_BATTERY:
-                ...
+                self.datebase.register_component("-b", request[1::])
             elif head == Rq.REGISTER_DIAGNOSTIC_CHAMBER:
-                ...
+                self.database.register_component("-dc", request[1::])
             elif head == Rq.REGISTER_TEMPERATURE_CHAMBER:
-                ...
+                self.database.register_component("-tc", request[1::])
             elif head == Rq.LAUNCH_DIAGNOSTIC:
                 ...
             elif head == Rq.LOAD_BATTERIES:
