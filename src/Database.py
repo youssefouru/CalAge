@@ -2,7 +2,7 @@ import Form
 from Battery import Battery, BatteryEncoder
 from Form import translator
 from TempChamber import TempChamber
-import json
+import pickle
 
 
 class Database:
@@ -14,7 +14,7 @@ class Database:
         self.numBat = 0
         self.numTemp = 0
         self.numDiag = 0
-        self.name = "res/database.txt"
+        self.name = "res/database.pickle"
 
     def register_component(self, head, *params):
         if head == "-b":
@@ -49,17 +49,17 @@ class Database:
             return None
 
     def save(self):
-        with open(self.name, "w") as my_file:
-            json.dump(self.batteries, my_file, cls=BatteryEncoder)
-            json.dump(self.tempChambers, my_file)
-            json.dump(self.diagChambers, my_file)
+        with open(self.name, 'r') as my_file:
+            pickle.dump(self.batteries, my_file)
+            pickle.dump(self.tempChambers, my_file)
+            pickle.dump(self.diagChambers, my_file)
             my_file.close()
 
     def load(self):
-        with open(self.name, "r") as my_file:
-            self.batteries = json.load(my_file)
-            self.tempChambers = json.load(my_file)
-            self.diagChambers = json.load(my_file)
+        with open(self.name, 'r') as my_file:
+            self.batteries = pickle.load(my_file)
+            self.tempChambers = pickle.load(my_file)
+            self.diagChambers = pickle.load(my_file)
             my_file.close()
 
     def needToBeDiagnosed(self):
