@@ -22,7 +22,7 @@ class DiagChamber:
         """
         self.temperature = temperature
         self.time = relativedelta(days=time)
-        self.channels = {x: channels.get(x, 0) for x in Fr[1::]}
+        self.channels = {x: channels[x] for x in Fr[1::]}
         self.loaded_batteries = {x: [] for x in Fr[1::]}
         self.sealed = False
         self.start_date = date.today()

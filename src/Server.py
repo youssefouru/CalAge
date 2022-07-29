@@ -27,26 +27,34 @@ class Server:
     def run(self):
         self.running = True
         data = []
+
         while self.process(data):
             request = data.pop()
             head = translate.get(request[0], Rq.UNRECOGNIZED)
             if head == Rq.REGISTER_BATTERY:
-                self.database.register_component("-b", request[1::])
+                self.database.register_component(head, request[1::])
             elif head == Rq.REGISTER_DIAGNOSTIC_CHAMBER:
-                self.database.register_component("-dc", request[1::])
+                self.database.register_component(head, request[1::])
             elif head == Rq.REGISTER_TEMPERATURE_CHAMBER:
-                self.database.register_component("-tc", request[1::])
+                self.database.register_component(head, request[1::])
             elif head == Rq.LAUNCH_DIAGNOSTIC:
                 self.database.get(request[1], None).start_diagnostic()
             elif head == Rq.LOAD_BATTERIES:
-                ...
+                dc = self.database.get(request[1], None)
+                for i in request[1::]:
+                    dc.load(self.database.get("-b", int(i)))
             elif head == Rq.ABORT_DIAGNOSTIC:
-                ...
+                self.database.get(request[1], None).unload(True)
+            elif head == Rq.SAVE:
+                self.database.save()
+            elif head == Rq.LOAD:
+                self.database.load()
             elif head == Rq.DISCONNECT:
                 print("Disconnected")
                 break
             else:
                 print("Illegal request")
+        self.database.save()
 
     def receive_request(self, request):
         """
@@ -61,5 +69,6 @@ class Server:
 
     def isRunning(self):
         return self.running
+
 
 

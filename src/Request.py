@@ -9,8 +9,10 @@ class Request(Enum):
     LAUNCH_DIAGNOSTIC = 3
     LOAD_BATTERIES = 4
     ABORT_DIAGNOSTIC = 5
+    LOAD = 6
+    SAVE = 7
 
-    DISCONNECT = 6
+    DISCONNECT = 8
 
 
 translate = {
@@ -21,7 +23,8 @@ translate = {
     "LAUNCH_DIAGNOSTIC": Request.LAUNCH_DIAGNOSTIC,
     "LOAD_BATTERIES": Request.LOAD_BATTERIES,
     "ABORT_DIAGNOSTIC": Request.ABORT_DIAGNOSTIC,
-
+    "LOAD": Request.LOAD,
+    "SAVE": Request.SAVE,
     "DISCONNECT": Request.DISCONNECT,
 
     Request.UNRECOGNIZED: "UNRECOGNIZED",
@@ -31,7 +34,8 @@ translate = {
     Request.LAUNCH_DIAGNOSTIC: "LAUNCH_DIAGNOSTIC",
     Request.LOAD_BATTERIES: "LOAD_BATTERIES",
     Request.ABORT_DIAGNOSTIC: "ABORT_DIAGNOSTIC",
-
+    Request.LOAD: "LOAD",
+    Request.SAVE: "SAVE",
     Request.DISCONNECT: "DISCONNECT"
 }
 
@@ -42,6 +46,8 @@ format = {
     Request.LAUNCH_DIAGNOSTIC: "LAUNCH_DIAGNOSTIC",
     Request.LOAD_BATTERIES: "LOAD_BATTERIES {}",
     Request.ABORT_DIAGNOSTIC: "ABORT_DIAGNOSTIC",
+    Request.LOAD: "LOAD",
+    Request.SAVE: "SAVE",
 
     Request.DISCONNECT: "DISCONNECT"
 }

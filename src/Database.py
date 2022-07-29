@@ -1,6 +1,9 @@
 import Form
+from DiagChamber import DiagChamber
 from Form import translator
 from TempChamber import TempChamber
+from Battery import Battery
+from Request import Request as Rq
 import pickle
 
 
@@ -16,7 +19,7 @@ class Database:
         self.name = "res/database.pickle"
 
     def register_component(self, head, *params):
-        if head == "-b":
+        if head == Rq.REGISTER_BATTERY:
             barcode = params[0]
             seqnum = params[1]
             storage_location = self.tempChambers.get(int(params[2]), None)
@@ -29,13 +32,17 @@ class Database:
                               battery_name, soc)
             self.batteries[self.numBat] = battery
             self.numBat += 1
-        elif head == "-tc":
+        elif head == Rq.REGISTER_TEMPERATURE_CHAMBER:
             temperature = int(params[0])
             tempChamber = TempChamber(temperature)
             self.tempChambers[self.numTemp] = tempChamber
             self.numTemp += 1
-        elif head == "-dc":
-            ...
+        elif head == Rq.REGISTER_DIAGNOSTIC_CHAMBER:
+            temp = int(params[0])
+            time = int(params[1])
+            channels = [int(x) for x in params[2].split(",")]
+            self.diagChambers[self.numDiag] = DiagChamber(temp, time, channels)
+            self.numDiag += 1
 
     def get(self, ty, number):
         if ty == "-b":
@@ -48,14 +55,14 @@ class Database:
             return None
 
     def save(self):
-        with open(self.name, 'r') as my_file:
+        with open(self.name, 'wb') as my_file:
             pickle.dump(self.batteries, my_file)
             pickle.dump(self.tempChambers, my_file)
             pickle.dump(self.diagChambers, my_file)
             my_file.close()
 
     def load(self):
-        with open(self.name, 'r') as my_file:
+        with open(self.name, 'rb') as my_file:
             self.batteries = pickle.load(my_file)
             self.tempChambers = pickle.load(my_file)
             self.diagChambers = pickle.load(my_file)
@@ -69,3 +76,4 @@ class Database:
                     b.append(battery)
 
         return b
+
