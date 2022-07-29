@@ -6,7 +6,8 @@ import numpy as np
 
 
 class DiagChamber:
-    def __init__(self, temperature, time=relativedelta(days=7), channels=None):
+
+    def __init__(self, temperature, time=7, channels=None):
         """
         Constructor of the diagnostic chamber.
 
@@ -20,7 +21,7 @@ class DiagChamber:
             A map representing the maximum slots per form factor of batteries
         """
         self.temperature = temperature
-        self.time = time
+        self.time = relativedelta(days=time)
         self.channels = {x: channels.get(x, 0) for x in Fr[1::]}
         self.loaded_batteries = {x: [] for x in Fr[1::]}
         self.sealed = False
@@ -54,7 +55,6 @@ class DiagChamber:
         for shape in Fr[1::]:
             for battery in self.loaded_batteries[shape]:
                 battery.under_diag = True
-        self.start_date = date.today()
         self.finish_date = self.start_date + self.time
 
     def isFinished(self):

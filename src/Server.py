@@ -8,24 +8,24 @@ from BlockingQueue import BlockingQueue
 
 class Server:
 
-    def __init__(self, shutdown):
+    def __init__(self):
         self.requests = BlockingQueue()
         self.database = Database()
         self.heads = []
-        self.shutdown = shutdown
+        self.running = False
 
     def process(self, data):
-        rq = self.requests.dequeue()
+        rq = input().split()
         data.append(rq)
         self.heads.append(rq[0])
         if translate.get(rq[0], Rq.UNRECOGNIZED) != Rq.DISCONNECT:
             return True
         else:
-            self.shutdown.pop()
+            self.running = False
             return False
 
     def run(self):
-        self.shutdown.append(0)
+        self.running = True
         data = []
         while self.process(data):
             request = data.pop()
@@ -48,7 +48,6 @@ class Server:
             else:
                 print("Illegal request")
 
-
     def receive_request(self, request):
         """
         This method will add the request to the requests
@@ -60,14 +59,7 @@ class Server:
         """
         self.requests.enqueue(request)
 
+    def isRunning(self):
+        return self.running
 
-tab = []
-server = Server(tab)
-server_thread = Thread(target=server.run)
-server_thread.start()
-while len(tab) > 0:
-    print("write")
-    request = input().split()
-    server.receive_request(request)
-print(server.heads)
-server_thread.join()
+

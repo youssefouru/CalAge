@@ -43,8 +43,6 @@ class Battery:
         self.battery_name = battery_name
         self.soc = soc
         self.next_diag = date.today()
-        self.file = ""
-        self.protocol = ""
         self.seqnum = seqnum
         self.storage_location = storage_location
         storage_location.register(self)
@@ -57,16 +55,8 @@ class Battery:
         return date.today() >= self.next_diag
 
     def generateFile(self):
-        name = "res/{}_{}_{}.txt".format(self.barcode, self.seqnum, self.diagnostic_number)
-        self.file = open(name, "w")
-        return self.file
+        return "res/{}_{}_{}.txt".format(self.barcode, self.seqnum, self.diagnostic_number)
 
     def generateProtocol(self):
-        name = "res/{}_{}.txt".format(translator(self.form_factor), self.soc)
-        self.protocol = open(name, "w")
-        return self.protocol
+        return "res/{}_{}.txt".format(translator(self.form_factor), self.soc)
 
-
-class BatteryEncoder(JSONEncoder):
-    def default(self, o):
-        return o.__dict__

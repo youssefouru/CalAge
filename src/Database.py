@@ -1,5 +1,4 @@
 import Form
-from Battery import Battery, BatteryEncoder
 from Form import translator
 from TempChamber import TempChamber
 import pickle

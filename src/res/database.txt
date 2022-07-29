@@ -1,1 +1,1 @@
-{"0": {"barcode": "100", "temperature": 37, "diagnostic_frequency": 7, "form_factor": {"_value_": 1, "_name_": "Pouch", "__objclass__": 
+{}{}{}
