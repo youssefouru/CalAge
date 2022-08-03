@@ -58,7 +58,7 @@ class DiagChamber:
         self.finish_date = self.start_date + self.time
 
     def isFinished(self):
-        return date.today() >= self.finish_date
+        return date.today() >= self.finish_date and self.sealed
 
     def unload(self, aborted=False):
         if not (self.isFinished() or aborted):

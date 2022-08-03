@@ -1,8 +1,10 @@
 from threading import Thread
 
+import Error
 from Database import Database
 from Request import Request as Rq
 from Request import translate
+from Error import Error as Err
 from BlockingQueue import BlockingQueue
 
 
@@ -17,7 +19,7 @@ class Server:
     def process(self, data):
         rq = input().split()
         data.append(rq)
-        self.heads.append(rq[0])
+        self.heads.append(translate.get(rq[0], Rq.UNRECOGNIZED))
         if translate.get(rq[0], Rq.UNRECOGNIZED) != Rq.DISCONNECT:
             return True
         else:
@@ -30,7 +32,10 @@ class Server:
 
         while self.process(data):
             request = data.pop()
+            err = Err.ERR_NONE
             head = translate.get(request[0], Rq.UNRECOGNIZED)
+            for diagChamber in self.database.diagChambers:
+                diagChamber.unload()
             if head == Rq.REGISTER_BATTERY:
                 self.database.register_component(head, request[1::])
             elif head == Rq.REGISTER_DIAGNOSTIC_CHAMBER:
@@ -44,7 +49,7 @@ class Server:
                 for i in request[1::]:
                     dc.load(self.database.get("-b", int(i)))
             elif head == Rq.ABORT_DIAGNOSTIC:
-                self.database.get(request[1], None).unload(True)
+                err = self.database.get(request[1], None).unload(True)
             elif head == Rq.SAVE:
                 self.database.save()
             elif head == Rq.LOAD:
@@ -54,6 +59,8 @@ class Server:
                 break
             else:
                 print("Illegal request")
+            if err != Err.ERR_NONE:
+                print(Error.messages[err])
         self.database.save()
 
     def receive_request(self, request):
@@ -71,4 +78,6 @@ class Server:
         return self.running
 
 
-
+server = Server()
+server.run()
+print(server.heads)
