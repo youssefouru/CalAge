@@ -11,8 +11,9 @@ class Request(Enum):
     ABORT_DIAGNOSTIC = 5
     LOAD = 6
     SAVE = 7
+    TO_STRING = 8
 
-    DISCONNECT = 8
+    DISCONNECT = 9
 
 
 translate = {
@@ -26,6 +27,7 @@ translate = {
     "LOAD": Request.LOAD,
     "SAVE": Request.SAVE,
     "DISCONNECT": Request.DISCONNECT,
+    "TO_STRING": Request.TO_STRING,
 
     Request.UNRECOGNIZED: "UNRECOGNIZED",
     Request.REGISTER_BATTERY: "REGISTER_BATTERY",
@@ -36,6 +38,8 @@ translate = {
     Request.ABORT_DIAGNOSTIC: "ABORT_DIAGNOSTIC",
     Request.LOAD: "LOAD",
     Request.SAVE: "SAVE",
+    Request.TO_STRING: "TO_STRING",
+
     Request.DISCONNECT: "DISCONNECT"
 }
 

@@ -4,6 +4,7 @@ from json import JSONEncoder
 
 from Error import Error as Err
 from Form import *
+from dateutil.relativedelta import relativedelta
 
 
 class Battery:
@@ -35,7 +36,7 @@ class Battery:
 
         self.barcode = barcode
         self.temperature = temperature
-        self.diagnostic_frequency = diagnostic_frequency
+        self.diagnostic_frequency = relativedelta(days=diagnostic_frequency)
         self.form_factor = form_factor
         self.active_status = True
         self.under_diag = False
@@ -60,3 +61,9 @@ class Battery:
     def generateProtocol(self):
         return "res/{}_{}.txt".format(translator(self.form_factor), self.soc)
 
+    def toString(self):
+        print("Battery")
+        print(
+            "(barcode={}, seqnum={}, storage_location={}, temperature={}, diagnostic_frequency={}, form_factor={}, battery_name={}, soc={})".format(
+                self.barcode, self.seqnum, self.storage_location.name, self.temperature, self.diagnostic_frequency,
+                self.form_factor.name, self.battery_name, self.soc))

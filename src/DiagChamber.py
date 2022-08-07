@@ -22,11 +22,10 @@ class DiagChamber:
         """
         self.temperature = temperature
         self.time = relativedelta(days=time)
-        self.channels = {x: channels[x] for x in Fr[1::]}
-        self.loaded_batteries = {x: [] for x in Fr[1::]}
+        self.channels = channels
+        self.loaded_batteries = {x: [] for x in Fr}
         self.sealed = False
-        self.start_date = date.today()
-        self.finish_date = self.start_date + self.time
+        self.finish_date = date.today() + self.time
 
     def load_battery(self, battery):
         """
@@ -37,37 +36,41 @@ class DiagChamber:
         :param battery:  The battery we want to register.
         :return: error code.
         """
-        if battery.temperature is not self.temperature:
-            return Err.ERR_TEMP
-
         if self.channels[battery.form_factor] <= 0:
             return Err.ERR_NO_SLOTS
-
-        if not battery.can_be_diagnosed():
-            return Err.ERR_DIAG_TOO_EARLY
+        if battery.under_diag:
+            return Err.ERR_ILLEGAL_ARGUMENT
 
         self.loaded_batteries[battery.form_factor].append(battery)
         self.channels[battery.form_factor] -= 1
         return Err.ERR_NONE
 
     def start_diagnostic(self):
+        self.finish_date = date.today() + self.time
         self.sealed = True
-        for shape in Fr[1::]:
-            for battery in self.loaded_batteries[shape]:
+        for (shape, batteries) in self.loaded_batteries.items():
+            for battery in batteries:
                 battery.under_diag = True
-        self.finish_date = self.start_date + self.time
 
     def isFinished(self):
-        return date.today() >= self.finish_date and self.sealed
+        return date.today() == self.finish_date
 
     def unload(self, aborted=False):
-        if not (self.isFinished() or aborted):
+        if self.sealed or (not aborted):
             return Err.ERR_SEALED_CHAMBER
-        self.sealed = False
-        for shape in Fr[1::]:
-            for battery in self.loaded_batteries[shape]:
-                self.channels[shape] += 1 if not aborted else 0
+        for (shape, batteries) in self.loaded_batteries.items():
+            for battery in batteries:
                 battery.under_diag = False
                 battery.next_diag = date.today() if not aborted else date.today() + battery.diagnostic_frequency
-                battery.diagnostic_number += 0 if not aborted else 1
+                battery.diagnostic_number += 0 if aborted else 1
+            self.channels[shape] += len(batteries)
             self.loaded_batteries[shape] = []
+        self.sealed = False
+
+    def advance_time(self, time=1):
+        """
+        This for prototyping purposes
+        :param time:
+        :return:
+        """
+        self.finish_date -= relativedelta(days=time)

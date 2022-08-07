@@ -34,31 +34,33 @@ class Server:
             request = data.pop()
             err = Err.ERR_NONE
             head = translate.get(request[0], Rq.UNRECOGNIZED)
-            for diagChamber in self.database.diagChambers:
-                diagChamber.unload()
-            if head == Rq.REGISTER_BATTERY:
-                self.database.register_component(head, request[1::])
-            elif head == Rq.REGISTER_DIAGNOSTIC_CHAMBER:
-                self.database.register_component(head, request[1::])
-            elif head == Rq.REGISTER_TEMPERATURE_CHAMBER:
-                self.database.register_component(head, request[1::])
-            elif head == Rq.LAUNCH_DIAGNOSTIC:
-                self.database.get(request[1], None).start_diagnostic()
-            elif head == Rq.LOAD_BATTERIES:
-                dc = self.database.get(request[1], None)
-                for i in request[1::]:
-                    dc.load(self.database.get("-b", int(i)))
-            elif head == Rq.ABORT_DIAGNOSTIC:
-                err = self.database.get(request[1], None).unload(True)
-            elif head == Rq.SAVE:
-                self.database.save()
-            elif head == Rq.LOAD:
-                self.database.load()
-            elif head == Rq.DISCONNECT:
-                print("Disconnected")
-                break
-            else:
-                print("Illegal request")
+            request = request[1::]
+            match head:
+                case Rq.REGISTER_BATTERY:
+                    self.database.register_component(head, request)
+                case Rq.REGISTER_DIAGNOSTIC_CHAMBER:
+                    self.database.register_component(head, request)
+                case Rq.REGISTER_TEMPERATURE_CHAMBER:
+                    self.database.register_component(head, request)
+                case Rq.LAUNCH_DIAGNOSTIC:
+                    self.database.get(head, None).start_diagnostic()
+                case Rq.LOAD_BATTERIES:
+                    dc = self.database.get(head, None)
+                    for i in request:
+                        dc.load(self.database.get("-b", int(i)))
+                case Rq.ABORT_DIAGNOSTIC:
+                    err = self.database.get(request[0], None).unload(True)
+                case Rq.SAVE:
+                    self.database.save()
+                case Rq.LOAD:
+                    self.database.load()
+                case Rq.TO_STRING:
+                    self.database.toString()
+                case Rq.DISCONNECT:
+                    print("Disconnected")
+                    break
+                case other:
+                    print("Illegal request")
             if err != Err.ERR_NONE:
                 print(Error.messages[err])
         self.database.save()

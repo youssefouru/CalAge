@@ -18,31 +18,35 @@ class Database:
         self.numDiag = 0
         self.name = "res/database.pickle"
 
-    def register_component(self, head, *params):
-        if head == Rq.REGISTER_BATTERY:
-            barcode = params[0]
-            seqnum = params[1]
-            storage_location = self.tempChambers.get(int(params[2]), None)
-            temperature = int(params[3])
-            diagnostic_frequency = int(params[4])
-            form_factor = Form.translator.get(params[5], None)
-            battery_name = params[6]
-            soc = int(params[7])
-            battery = Battery(barcode, seqnum, storage_location, temperature, diagnostic_frequency, form_factor,
-                              battery_name, soc)
-            self.batteries[self.numBat] = battery
-            self.numBat += 1
-        elif head == Rq.REGISTER_TEMPERATURE_CHAMBER:
-            temperature = int(params[0])
-            tempChamber = TempChamber(temperature)
-            self.tempChambers[self.numTemp] = tempChamber
-            self.numTemp += 1
-        elif head == Rq.REGISTER_DIAGNOSTIC_CHAMBER:
-            temp = int(params[0])
-            time = int(params[1])
-            channels = [int(x) for x in params[2].split(",")]
-            self.diagChambers[self.numDiag] = DiagChamber(temp, time, channels)
-            self.numDiag += 1
+    def register_component(self, head, params):
+        match head:
+            case Rq.REGISTER_BATTERY:
+                barcode = params[0]
+                seqnum = params[1]
+                storage_location = self.tempChambers.get(params[2], None)
+                temperature = int(params[3])
+                diagnostic_frequency = int(params[4])
+                form_factor = Form.translator.get(params[5], None)
+                battery_name = params[6]
+                soc = int(params[7])
+                battery = Battery(barcode, seqnum, storage_location, temperature, diagnostic_frequency, form_factor,
+                                  battery_name, soc)
+                self.batteries[self.numBat] = battery
+                self.numBat += 1
+            case Rq.REGISTER_TEMPERATURE_CHAMBER:
+                temperature = int(params[0])
+                name = params[1]
+                tempChamber = TempChamber(temperature, name)
+                self.tempChambers[name] = tempChamber
+                self.numTemp += 1
+            case Rq.REGISTER_DIAGNOSTIC_CHAMBER:
+                temp = int(params[0])
+                time = int(params[1])
+                channels = [int(x) for x in params[2].split(",")]
+                self.diagChambers[self.numDiag] = DiagChamber(temp, time, channels)
+                self.numDiag += 1
+            case other:
+                pass
 
     def get(self, ty, number):
         if ty == "-b":
@@ -77,3 +81,6 @@ class Database:
 
         return b
 
+    def toString(self):
+        for temp in self.tempChambers:
+            print(self.tempChambers[temp].toString())

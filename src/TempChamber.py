@@ -2,7 +2,7 @@ from src.Error import Error as Er
 
 
 class TempChamber:
-    def __init__(self, temperature):
+    def __init__(self, temperature, name):
         """
         Constructor of TempChamber
 
@@ -12,6 +12,7 @@ class TempChamber:
             The temperature of the chamber
         """
         self.temperature = temperature
+        self.name = name
         self.batteries = {}
 
     def register(self, battery):
@@ -34,3 +35,8 @@ class TempChamber:
     def unregister(self, barcode):
         battery = self.batteries.pop(barcode)
         return battery
+
+    def toString(self):
+        print("Temperature Chamber {}".format(self.name))
+        for (barcode, battery) in self.batteries.items():
+            print(battery.toString())
