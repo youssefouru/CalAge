@@ -13,8 +13,9 @@ class Request(Enum):
     POP = 7
     ADVANCE_TIME = 8
     GENERATE_FILE = 9
+    UNLOAD = 10
 
-    DISCONNECT = 10
+    DISCONNECT = 11
 
 
 translate = {
@@ -29,6 +30,7 @@ translate = {
     "POP": Request.POP,
     "ADVANCE_TIME": Request.ADVANCE_TIME,
     "GENERATE_FILE": Request.GENERATE_FILE,
+    "UNLOAD": Request.UNLOAD,
 
     "DISCONNECT": Request.DISCONNECT,
 
@@ -43,6 +45,7 @@ translate = {
     Request.POP: "POP",
     Request.ADVANCE_TIME: "ADVANCE_TIME",
     Request.GENERATE_FILE: "GENERATE_FILE",
+    Request.UNLOAD: "UNLOAD",
 
     Request.DISCONNECT: "DISCONNECT"
 }

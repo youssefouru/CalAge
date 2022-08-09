@@ -36,8 +36,6 @@ class Server:
             err = Err.ERR_NONE
             head = translate.get(request[0], Rq.UNRECOGNIZED)
             request = request[1::]
-            for (num, dc) in self.database.diagChambers.items():
-                dc.unload()
             match head:
                 case Rq.REGISTER:
                     head = request[0]
@@ -64,6 +62,8 @@ class Server:
                     self.database.get("-dc", int(request[0])).advance_time(int(request[1]))
                 case Rq.GENERATE_FILE:
                     print(self.database.get("-b", int(request[0])).generateFile())
+                case Rq.UNLOAD:
+                    self.database.get("-dc", int(request[0])).unload()
                 case Rq.DISCONNECT:
                     print("Disconnected")
                     break
@@ -86,8 +86,3 @@ class Server:
 
     def isRunning(self):
         return self.running
-
-
-server = Server()
-server.run()
-print(server.heads)

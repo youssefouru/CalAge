@@ -78,7 +78,6 @@ class DiagChamber:
         :return:
         """
         self.finish_date -= relativedelta(days=time)
-        print(self.finish_date)
 
     def toString(self):
         print("Diagnostic Chamber:")
