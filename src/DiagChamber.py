@@ -56,7 +56,7 @@ class DiagChamber:
         return date.today() >= self.finish_date
 
     def unload(self, aborted=False):
-        if self.sealed or (not aborted):
+        if not (self.isFinished() or aborted):
             return Err.ERR_SEALED_CHAMBER
         print("unloading")
         for (shape, batteries) in self.loaded_batteries.items():

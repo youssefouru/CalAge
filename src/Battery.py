@@ -63,7 +63,6 @@ class Battery:
 
     def toString(self):
         print("Battery")
-        print(
-            "(barcode={}, seqnum={}, storage_location={}, temperature={}, diagnostic_frequency={}, form_factor={}, battery_name={}, soc={})".format(
-                self.barcode, self.seqnum, self.storage_location.name, self.temperature, self.diagnostic_frequency,
+        print("(barcode={}, seqnum={}, storage_location={}, temperature={}, diagnostic_frequency={}, form_factor={}, battery_name={}, soc={})".format(
+                self.barcode, self.seqnum, self.storage_location.name, self.temperature, self.diagnostic_frequency.days,
                 self.form_factor.name, self.battery_name, self.soc))
