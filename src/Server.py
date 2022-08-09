@@ -1,5 +1,6 @@
 from threading import Thread
 
+import DiagChamber
 import Error
 from Database import Database
 from Request import Request as Rq
@@ -36,18 +37,18 @@ class Server:
             head = translate.get(request[0], Rq.UNRECOGNIZED)
             request = request[1::]
             match head:
-                case Rq.REGISTER_BATTERY:
-                    self.database.register_component(head, request)
-                case Rq.REGISTER_DIAGNOSTIC_CHAMBER:
-                    self.database.register_component(head, request)
-                case Rq.REGISTER_TEMPERATURE_CHAMBER:
+                case Rq.REGISTER:
+                    head = request[0]
+                    request = request[1::]
                     self.database.register_component(head, request)
                 case Rq.LAUNCH_DIAGNOSTIC:
-                    self.database.get(head, None).start_diagnostic()
+                    self.database.get("-dc", int(request[0])).start_diagnostic()
                 case Rq.LOAD_BATTERIES:
-                    dc = self.database.get(head, None)
-                    for i in request:
-                        dc.load(self.database.get("-b", int(i)))
+                    dc = self.database.get("-dc", int(request[0]))
+                    print(dc)
+                    batteries = [self.database.get("-b", int(i)) for i in request[1::]]
+                    for b in batteries:
+                        dc.load_battery(b)
                 case Rq.ABORT_DIAGNOSTIC:
                     err = self.database.get(request[0], None).unload(True)
                 case Rq.SAVE:
@@ -56,6 +57,8 @@ class Server:
                     self.database.load()
                 case Rq.TO_STRING:
                     self.database.toString()
+                case Rq.POP:
+                    self.database.remove(request[0], request[1])
                 case Rq.DISCONNECT:
                     print("Disconnected")
                     break

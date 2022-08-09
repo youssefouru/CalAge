@@ -39,4 +39,4 @@ class TempChamber:
     def toString(self):
         print("Temperature Chamber {}".format(self.name))
         for (barcode, battery) in self.batteries.items():
-            print(battery.toString())
+            battery.toString()

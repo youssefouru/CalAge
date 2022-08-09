@@ -20,7 +20,7 @@ class Database:
 
     def register_component(self, head, params):
         match head:
-            case Rq.REGISTER_BATTERY:
+            case "-b":
                 barcode = params[0]
                 seqnum = params[1]
                 storage_location = self.tempChambers.get(params[2], None)
@@ -33,13 +33,13 @@ class Database:
                                   battery_name, soc)
                 self.batteries[self.numBat] = battery
                 self.numBat += 1
-            case Rq.REGISTER_TEMPERATURE_CHAMBER:
+            case "-tc":
                 temperature = int(params[0])
                 name = params[1]
                 tempChamber = TempChamber(temperature, name)
                 self.tempChambers[name] = tempChamber
                 self.numTemp += 1
-            case Rq.REGISTER_DIAGNOSTIC_CHAMBER:
+            case "-dc":
                 temp = int(params[0])
                 time = int(params[1])
                 channels = [int(x) for x in params[2].split(",")]
@@ -49,14 +49,27 @@ class Database:
                 pass
 
     def get(self, ty, number):
-        if ty == "-b":
-            return self.batteries.get(number, None)
-        elif ty == "-tc":
-            return self.tempChambers.get(number, None)
-        elif ty == "-dc":
-            return self.diagChambers.get(number, None)
-        else:
-            return None
+        match ty:
+            case "-b":
+                return self.batteries.get(number, None)
+            case "-tc":
+                return self.tempChambers.get(number, None)
+            case "-dc":
+                return self.diagChambers.get(number, None)
+            case other:
+                return None
+
+    def remove(self, head, id):
+        match head:
+            case "-b":
+                self.batteries.pop(int(id), None)
+                self.numBat -= 1
+            case "-tc":
+                self.tempChambers.pop(id, None)
+                self.numTemp -= 1
+            case "-dc":
+                self.diagChambers.pop(int(id), None)
+                self.numDiag -= 1
 
     def save(self):
         with open(self.name, 'wb') as my_file:
@@ -82,5 +95,9 @@ class Database:
         return b
 
     def toString(self):
-        for temp in self.tempChambers:
-            print(self.tempChambers[temp].toString())
+
+        for (name, tc) in self.tempChambers.items():
+            tc.toString()
+
+        for (number, dc) in self.diagChambers.items():
+            print(dc)
