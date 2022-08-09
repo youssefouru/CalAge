@@ -53,16 +53,20 @@ class DiagChamber:
                 battery.under_diag = True
 
     def isFinished(self):
-        return date.today() == self.finish_date
+        return date.today() >= self.finish_date
 
     def unload(self, aborted=False):
         if self.sealed or (not aborted):
             return Err.ERR_SEALED_CHAMBER
+        print("unloading")
         for (shape, batteries) in self.loaded_batteries.items():
             for battery in batteries:
                 battery.under_diag = False
-                battery.next_diag = date.today() if not aborted else date.today() + battery.diagnostic_frequency
-                battery.diagnostic_number += 0 if aborted else 1
+                if not aborted:
+                    battery.diagnostic_number += 1
+                    battery.next_diag = date.today() + battery.diagnostic_frequency
+                if aborted:
+                    battery.next_diag = date.today()
             self.channels[shape] += len(batteries)
             self.loaded_batteries[shape] = []
         self.sealed = False
@@ -74,3 +78,11 @@ class DiagChamber:
         :return:
         """
         self.finish_date -= relativedelta(days=time)
+        print(self.finish_date)
+
+    def toString(self):
+        print("Diagnostic Chamber:")
+        numBat = 0
+        for (shape, batteries) in self.loaded_batteries.items():
+            numBat += len(batteries)
+        print("Temperature={}, Time={} days, Batteries={}".format(self.temperature, self.time.days, numBat))

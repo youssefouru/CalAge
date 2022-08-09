@@ -76,6 +76,9 @@ class Database:
             pickle.dump(self.batteries, my_file)
             pickle.dump(self.tempChambers, my_file)
             pickle.dump(self.diagChambers, my_file)
+            pickle.dump(self.numBat, my_file)
+            pickle.dump(self.numDiag, my_file)
+            pickle.dump(self.numTemp, my_file)
             my_file.close()
 
     def load(self):
@@ -83,6 +86,9 @@ class Database:
             self.batteries = pickle.load(my_file)
             self.tempChambers = pickle.load(my_file)
             self.diagChambers = pickle.load(my_file)
+            self.numBat = pickle.load(my_file)
+            self.numDiag = pickle.load(my_file)
+            self.numTemp = pickle.load(my_file)
             my_file.close()
 
     def needToBeDiagnosed(self):
@@ -95,9 +101,11 @@ class Database:
         return b
 
     def toString(self):
-
+        print("Number of Temperature Chambers : {}".format(self.numTemp))
+        print("Number of Diagnostic Chambers : {}".format(self.numDiag))
+        print("Number of Battery : {}".format(self.numBat))
         for (name, tc) in self.tempChambers.items():
             tc.toString()
 
         for (number, dc) in self.diagChambers.items():
-            print(dc)
+            dc.toString()

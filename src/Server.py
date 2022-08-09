@@ -36,6 +36,8 @@ class Server:
             err = Err.ERR_NONE
             head = translate.get(request[0], Rq.UNRECOGNIZED)
             request = request[1::]
+            for (num, dc) in self.database.diagChambers.items():
+                dc.unload()
             match head:
                 case Rq.REGISTER:
                     head = request[0]
@@ -44,8 +46,7 @@ class Server:
                 case Rq.LAUNCH_DIAGNOSTIC:
                     self.database.get("-dc", int(request[0])).start_diagnostic()
                 case Rq.LOAD_BATTERIES:
-                    dc = self.database.get("-dc", int(request[0]))
-                    print(dc)
+                    dc = self.database.get("-dc", 0)
                     batteries = [self.database.get("-b", int(i)) for i in request[1::]]
                     for b in batteries:
                         dc.load_battery(b)
@@ -59,6 +60,10 @@ class Server:
                     self.database.toString()
                 case Rq.POP:
                     self.database.remove(request[0], request[1])
+                case Rq.ADVANCE_TIME:
+                    self.database.get("-dc", int(request[0])).advance_time(int(request[1]))
+                case Rq.GENERATE_FILE:
+                    print(self.database.get("-b", int(request[0])).generateFile())
                 case Rq.DISCONNECT:
                     print("Disconnected")
                     break
