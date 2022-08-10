@@ -20,17 +20,17 @@ class Request(Enum):
 
 translate = {
     "UNRECOGNIZED": Request.UNRECOGNIZED,
-    "REGISTER": Request.REGISTER,
-    "START": Request.LAUNCH_DIAGNOSTIC,
-    "LOAD_BATTERIES": Request.LOAD_BATTERIES,
-    "ABORT_DIAGNOSTIC": Request.ABORT_DIAGNOSTIC,
-    "LOAD": Request.LOAD,
-    "SAVE": Request.SAVE,
-    "TO_STRING": Request.TO_STRING,
-    "POP": Request.POP,
-    "ADVANCE_TIME": Request.ADVANCE_TIME,
-    "GENERATE_FILE": Request.GENERATE_FILE,
-    "UNLOAD": Request.UNLOAD,
+    "register": Request.REGISTER,
+    "start": Request.LAUNCH_DIAGNOSTIC,
+    "load -b": Request.LOAD_BATTERIES,
+    "abort": Request.ABORT_DIAGNOSTIC,
+    "load -s": Request.LOAD,
+    "save": Request.SAVE,
+    "print": Request.TO_STRING,
+    "pop": Request.POP,
+    "advance -t": Request.ADVANCE_TIME,
+    "generate -f": Request.GENERATE_FILE,
+    "unload": Request.UNLOAD,
 
     "DISCONNECT": Request.DISCONNECT,
 

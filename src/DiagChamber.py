@@ -27,7 +27,7 @@ class DiagChamber:
         self.sealed = False
         self.finish_date = date.today() + self.time
 
-    def load_battery(self, battery):
+    def load_battery(self, battery,channel):
         """
         This method will load the battery into diagnostic.
 
@@ -41,7 +41,7 @@ class DiagChamber:
         if battery.under_diag:
             return Err.ERR_ILLEGAL_ARGUMENT
 
-        self.loaded_batteries[battery.form_factor].append(battery)
+        self.loaded_batteries[channel] = battery
         self.channels[battery.form_factor] -= 1
         return Err.ERR_NONE
 

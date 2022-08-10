@@ -45,9 +45,9 @@ class Server:
                     self.database.get("-dc", int(request[0])).start_diagnostic()
                 case Rq.LOAD_BATTERIES:
                     dc = self.database.get("-dc", 0)
-                    batteries = [self.database.get("-b", int(i)) for i in request[1::]]
-                    for b in batteries:
-                        dc.load_battery(b)
+                    batteries = [(self.database.get("-b", int(a)), b) for (a, b) in zip(*[iter(request[1::])] * 2)]
+                    for (battery, channel) in batteries:
+                        dc.load_battery(battery, channel)
                 case Rq.ABORT_DIAGNOSTIC:
                     err = self.database.get(request[0], None).unload(True)
                 case Rq.SAVE:
@@ -69,8 +69,7 @@ class Server:
                     break
                 case other:
                     print("Illegal request")
-            if err != Err.ERR_NONE:
-                print(Error.messages[err])
+
         self.database.save()
 
     def receive_request(self, request):
@@ -86,3 +85,7 @@ class Server:
 
     def isRunning(self):
         return self.running
+
+
+server = Server()
+server.run()
