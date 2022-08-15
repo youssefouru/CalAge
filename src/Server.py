@@ -61,7 +61,10 @@ class Server:
                 case Rq.ADVANCE_TIME:
                     self.database.get("-dc", int(request[0])).advance_time(int(request[1]))
                 case Rq.GENERATE_FILE:
-                    print(self.database.get("-b", int(request[0])).generateFile())
+                    dc = self.database.get("-dc", int(request[0]))
+                    for (channel, battery) in dc.loaded_batteries.items():
+                        print("Channel {}: {} ------ {}".format(channel, battery.generateProtocol(),
+                                                                battery.generateFile()))
                 case Rq.UNLOAD:
                     self.database.get("-dc", int(request[0])).unload()
                 case Rq.DISCONNECT:

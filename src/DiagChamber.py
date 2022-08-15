@@ -58,7 +58,6 @@ class DiagChamber:
     def unload(self, aborted=False):
         if not (self.isFinished() or aborted):
             return Err.ERR_SEALED_CHAMBER
-        print("unloading")
         for (slot, battery) in self.loaded_batteries.items():
             battery.under_diag = False
             if not aborted:
@@ -84,5 +83,5 @@ class DiagChamber:
         numBat = len(self.loaded_batteries)
         print("Temperature={}, Time={} days, Batteries={}".format(self.temperature, self.time.days, numBat))
         for (channel, battery) in self.loaded_batteries.items():
-            print("Slot {}:".format(channel))
+            print("Channel {}:".format(channel))
             battery.toString()

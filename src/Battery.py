@@ -59,7 +59,7 @@ class Battery:
         return "res/{}_{}_{}.txt".format(self.barcode, self.seqnum, self.diagnostic_number)
 
     def generateProtocol(self):
-        return "res/{}_{}.txt".format(translator(self.form_factor), self.soc)
+        return "res/{}_{}.mpl".format(translator(self.form_factor), self.soc)
 
     def toString(self):
         print("Battery")
