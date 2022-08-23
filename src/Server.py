@@ -1,3 +1,4 @@
+from datetime import date
 from threading import Thread
 
 import DiagChamber
@@ -63,10 +64,32 @@ class Server:
                 case Rq.GENERATE_FILE:
                     dc = self.database.get("-dc", int(request[0]))
                     for (channel, battery) in dc.loaded_batteries.items():
-                        print("Channel {}: {} ------ {}".format(channel, battery.generateProtocol(),
-                                                                battery.generateFile()))
+                        print("Channel {}:{} ------ {}".format(channel, battery.generateProtocol(),
+                                                               battery.generateFile()))
+                case Rq.DIAG:
+                    num = 0
+                    for (name, tc) in self.database.tempChambers.items():
+                        batteries = tc.check_diag()
+                        if len(batteries) > 0:
+                            num += 1
+                            print("{}:".format(name))
+                            for barcode in batteries:
+                                print(barcode)
+                    if num == 0:
+                        print("No cells need to undergo diagnostic")
+                case Rq.STATUS:
+                    num = int(request[0])
+                    dc = self.database.get("-dc", num)
+                    days = (dc.finish_date - date.today())
+                    days = dc.time.days - days.days
+                    time = dc.time.days
+                    if days < time:
+                        print("{}/{} days".format(days, time))
+                    else:
+                        print("Diagnostic is complete please check diagnostic chamber to verify completion")
                 case Rq.UNLOAD:
-                    self.database.get("-dc", int(request[0])).unload()
+                    dc = self.database.get("-dc", int(request[0]))
+                    dc.unload()
                 case Rq.DISCONNECT:
                     print("Disconnected")
                     break

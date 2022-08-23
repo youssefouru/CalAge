@@ -1,8 +1,4 @@
-import json
 from datetime import date
-from json import JSONEncoder
-
-from Error import Error as Err
 from Form import *
 from dateutil.relativedelta import relativedelta
 
@@ -56,10 +52,10 @@ class Battery:
         return date.today() >= self.next_diag
 
     def generateFile(self):
-        return "res/{}_{}_{}.txt".format(self.barcode, self.seqnum, self.diagnostic_number)
+        return "res/{}_{}_{}".format(self.battery_name, self.barcode, self.diagnostic_number)
 
     def generateProtocol(self):
-        return "res/{}_{}.mpl".format(translator(self.form_factor), self.soc)
+        return "res/{}_{}.mpl".format(self.battery_name, self.soc)
 
     def toString(self):
         print("Battery")

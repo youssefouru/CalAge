@@ -14,8 +14,10 @@ class Request(Enum):
     ADVANCE_TIME = 8
     GENERATE_FILE = 9
     UNLOAD = 10
+    DIAG = 11
+    STATUS = 12
 
-    DISCONNECT = 11
+    DISCONNECT = 13
 
 
 translate = {
@@ -31,8 +33,9 @@ translate = {
     "advance-t": Request.ADVANCE_TIME,
     "generate-f": Request.GENERATE_FILE,
     "unload": Request.UNLOAD,
-
-    "DISCONNECT": Request.DISCONNECT,
+    "check-diag": Request.DIAG,
+    "status": Request.STATUS,
+    "disconnect": Request.DISCONNECT,
 
     Request.UNRECOGNIZED: "UNRECOGNIZED",
     Request.REGISTER: "REGISTER",

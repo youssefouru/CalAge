@@ -36,6 +36,13 @@ class TempChamber:
         battery = self.batteries.pop(barcode)
         return battery
 
+    def check_diag(self):
+        batteries = []
+        for (barcode, battery) in self.batteries.items():
+            if battery.can_be_diagnosed():
+                batteries.append(barcode)
+        return batteries
+
     def toString(self):
         print("Temperature Chamber {}".format(self.name))
         for (barcode, battery) in self.batteries.items():

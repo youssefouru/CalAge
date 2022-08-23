@@ -91,15 +91,6 @@ class Database:
             self.numTemp = pickle.load(my_file)
             my_file.close()
 
-    def needToBeDiagnosed(self):
-        b = []
-        for chamber in self.tempChambers:
-            for (barcode, battery) in chamber.batteries.item():
-                if battery.can_be_diagnosed():
-                    b.append(battery)
-
-        return b
-
     def toString(self):
         print("Number of Temperature Chambers : {}".format(self.numTemp))
         print("Number of Diagnostic Chambers : {}".format(self.numDiag))

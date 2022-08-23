@@ -57,7 +57,9 @@ class DiagChamber:
 
     def unload(self, aborted=False):
         if not (self.isFinished() or aborted):
+            print("Unloading too early")
             return Err.ERR_SEALED_CHAMBER
+        copy = self.loaded_batteries
         for (slot, battery) in self.loaded_batteries.items():
             battery.under_diag = False
             if not aborted:
@@ -69,6 +71,8 @@ class DiagChamber:
 
         self.loaded_batteries = {}
         self.sealed = False
+        for (channel, battery) in copy.items():
+            print("{}:{}->{}".format(channel, battery.barcode, battery.storage_location.name))
 
     def advance_time(self, time=1):
         """
