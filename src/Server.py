@@ -112,6 +112,3 @@ class Server:
     def isRunning(self):
         return self.running
 
-
-server = Server()
-server.run()
